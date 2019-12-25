@@ -13,6 +13,8 @@ public class CixaDialogo : MonoBehaviour
     float characterTimer;
     public Text textUI;
 
+    public Image downArrow;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -31,6 +33,14 @@ public class CixaDialogo : MonoBehaviour
             }
         }
         textUI.text = textos[textIndex].Substring(0, characterIndex+1);
+
+        if(characterIndex >= textos[textIndex].Length - 1) {
+            downArrow.gameObject.SetActive(true);
+        }
+        else {
+            downArrow.gameObject.SetActive(false);
+        }
+
     }
 
     public void Advance(Animator cameraAnimator)

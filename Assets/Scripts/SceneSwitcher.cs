@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class SceneSwitcher : MonoBehaviour
 {
+    public FadeSystem fade;
     // Start is called before the first frame update
     void Start()
     {
@@ -19,6 +20,6 @@ public class SceneSwitcher : MonoBehaviour
 
     public void ChangeScene(int scene)
     {
-        SceneManager.LoadScene(scene);
+        fade.ExitTo(scene);
     }
 }

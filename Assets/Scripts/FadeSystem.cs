@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class FadeSystem : MonoBehaviour
 {
     Image image;
     public bool intro, outro;
     float alpha = 1;
+    int nextScene;
     // Start is called before the first frame update
     void Start()
     {
@@ -29,9 +31,17 @@ public class FadeSystem : MonoBehaviour
             if(alpha > 1) {
                 alpha = 1;
                 outro = false;
+                SceneManager.LoadScene(nextScene);
             }
         }
 
         image.color = new Color(0, 0, 0, alpha);
+    }
+
+    public void ExitTo(int scene)
+    {
+        outro = true;
+        intro = false;
+        nextScene = scene;
     }
 }
