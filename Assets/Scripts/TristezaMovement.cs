@@ -32,8 +32,9 @@ public class TristezaMovement : MonoBehaviour
     Animator animator;
     Rigidbody2D body;
     Vector2 originalScale;
-    public LayerMask layerMask;
-    public ContactFilter2D damageMask;
+    public LayerMask layerMask; //mesmo layer mask de "visão" q a raiva
+    public ContactFilter2D damageMask; //os objetos q são "atingidos" pelo choro (no caso atualmente só o player, mas futuramente coisas
+    //quebráveis como vidro, etc)
     public ParticleSystem exclamation;
     float choroTimer = 0;
     float lagrimaTimer = 0;
@@ -58,7 +59,7 @@ public class TristezaMovement : MonoBehaviour
                 RaycastHit2D hit2 = Physics2D.Raycast(transform.position, new Vector2(-direction, 0), 2, layerMask);
                 bool avistouPlayer = (hit.collider != null && hit.collider.tag == "Player") || (hit2.collider != null && hit2.collider.tag == "Player");
 
-                if (avistouPlayer) {
+                if (avistouPlayer) { //se avistou o player, primeiro grita, e depois chora
                     exclamation.Play();
                     animator.SetTrigger("Grito");
                 }
@@ -79,7 +80,6 @@ public class TristezaMovement : MonoBehaviour
                 if (t.transition()) {
                     estado = t.to;
                 }
-
             }
         }
 
@@ -131,24 +131,23 @@ public class TristezaMovement : MonoBehaviour
                 animator.SetBool("Moving", false);
                 animator.SetBool("Chorando", true);
 
-                if (choroTimer > 5) {
+                if (choroTimer > 5) { //depois de 5 segundos chorando volta pro idle
                     choroTimer = 0;
                     estado = TristezaEstado.Idle;
                     animator.SetBool("Chorando", false);
                 }
 
                 lagrimaTimer += Time.deltaTime;
-                if(lagrimaTimer > 0.1f) {
+                if(lagrimaTimer > 0.1f) {//Se tiver chorando, spawna as lágrimas no rosto
                     lagrimaTimer = 0;
 
                     for (int i = -1; i <= 1; i += 2) {
                         GameObject lagrima = Instantiate(lagrimaPrefab);
                         lagrima.transform.position = transform.position;
-                        Vector3 direction = new Vector3(.3f * i, .7f, 0);
+                        Vector3 direction = new Vector3(.3f * i, .7f, 0); //vetor de direção de velocidade da lagrima
                         direction.Normalize();
-
-                        direction = Rotate(direction, UnityEngine.Random.Range(-3f, 3f));
-
+                        direction = Rotate(direction, UnityEngine.Random.Range(-3f, 3f)); //dá uma rodadinha aleatória só pra 
+                        //elas não sairem exatamente com a mesma velocidade, e ficar mais "agradavel"
                         lagrima.GetComponent<Rigidbody2D>().velocity = direction * 4;
                     }
                 }
@@ -180,7 +179,7 @@ public class TristezaMovement : MonoBehaviour
         return v;
     }
 
-    public void DamageArea()
+    public void DamageArea() //Dá dano nas coisas q chegaram perto do grito
     {
         List<RaycastHit2D> hitList = new List<RaycastHit2D>();
         Physics2D.CircleCast(transform.position, 3, new Vector2(1, 0), damageMask, hitList, 0);
@@ -192,7 +191,7 @@ public class TristezaMovement : MonoBehaviour
         }
     }
 
-    public void FinishGrito()
+    public void FinishGrito() //depois de finalizar a animação de grito, vai pro choro
     {
         estado = TristezaEstado.Chorando;
     }

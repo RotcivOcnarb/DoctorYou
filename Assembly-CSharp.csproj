@@ -67,6 +67,7 @@
     <Compile Include="Assets\Scripts\ButtonController.cs" />
     <Compile Include="Assets\Scripts\CameraFollow.cs" />
     <Compile Include="Assets\Scripts\CixaDialogo.cs" />
+    <Compile Include="Assets\Scripts\ExecuteDelayed.cs" />
     <Compile Include="Assets\Scripts\FadeSystem.cs" />
     <Compile Include="Assets\Scripts\Lagrima.cs" />
     <Compile Include="Assets\Scripts\MovableBox.cs" />
@@ -77,8 +78,8 @@
     <Compile Include="Assets\Scripts\RaivaMovement.cs" />
     <Compile Include="Assets\Scripts\RotateAround.cs" />
     <Compile Include="Assets\Scripts\SceneSwitcher.cs" />
+    <Compile Include="Assets\Scripts\TileableShader.cs" />
     <Compile Include="Assets\Scripts\TristezaMovement.cs" />
-    <Compile Include="Assets\TileableShader.cs" />
     <None Include="Assets\Materials\Tileable.shader" />
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>E:/unity/Game Jaaj 4/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>

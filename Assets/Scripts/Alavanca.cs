@@ -5,15 +5,9 @@ using UnityEngine;
 public class Alavanca : MonoBehaviour
 {
     public bool on;
-    public RotateAround rot;
+    public RotateAround rot; //isso aqui serve pra rodar a imagem da alavanca em volta de outro eixo sem ser o centro
+    //infelizmente o unity não tem um helper pra isso e eu tive q escrever o meu
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
     void Update()
     {
         if (on) {
@@ -28,7 +22,7 @@ public class Alavanca : MonoBehaviour
     {
         if(collision.GetComponent<RaivaMovement>() != null) {
             if(collision.GetComponent<RaivaMovement>().estado == RaivaMovement.RaivaEstado.Dash){
-                on = true;
+                on = true; //liga a alavanca se a raiva passar por ela enquanto estiver correndo
             }
         }
     }

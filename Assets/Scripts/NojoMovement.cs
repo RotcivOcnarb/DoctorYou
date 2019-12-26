@@ -18,11 +18,11 @@ public class NojoMovement : MonoBehaviour
     Animator animator;
     Rigidbody2D body;
     int frameDelay = 0;
-    public GameObject player;
+    public GameObject player; //referencia a player pra ele poder atirar em direção a ele
     int direction = 1;
     Vector3 originalScale;
-    public GameObject throwPointRight;
-    public GameObject throwPointLeft;
+    public GameObject throwPointRight; //o ponto de lançar acido do lado direito
+    public GameObject throwPointLeft; //e esquerdo (próximo da boca dele)
     public GameObject acidoPrefab;
 
     // Start is called before the first frame update
@@ -42,10 +42,11 @@ public class NojoMovement : MonoBehaviour
                 idleTimer -= Time.deltaTime;
                 if (idleTimer < 0) {
 
-                    Vector3 dif = player.transform.position - transform.position;
+                    Vector3 dif = player.transform.position - transform.position; //calcula a direção pra onde o player tá em relação
+                    //a mim
 
-
-                    if (Random.Range(0, 2) == 0 || dif.magnitude > 5) {
+                    if (Random.Range(0, 2) == 0 || dif.magnitude > 5) { //aleatóriamente pode pular ou cuspir (isso se o player estiver
+                        //próximo o suficiente, senão só pula)
                         estado = NojoState.Jump;
                         animator.SetTrigger("Jump");
                     }
@@ -53,6 +54,8 @@ public class NojoMovement : MonoBehaviour
                         estado = NojoState.Cuspe;
                         animator.SetTrigger("Cuspe");
 
+                        //Essa conta aqui é meio maluca, tu só precisa saber q ela calcula a direção do nojo
+                        //idependente de se ele estiver no teto na parede ou no chão
                         Vector2 normal = new Vector2(
                             Mathf.Cos(Mathf.Deg2Rad * (transform.rotation.eulerAngles.z+90)),
                             Mathf.Sin(Mathf.Deg2Rad * (transform.rotation.eulerAngles.z+90))
@@ -71,7 +74,7 @@ public class NojoMovement : MonoBehaviour
 
                 break;
             case NojoState.Jump:
-                frameDelay--;
+                frameDelay--; //mesmo esquema de delay de pulo do player
                 break;
             case NojoState.Cuspe:
                 break;
@@ -87,23 +90,22 @@ public class NojoMovement : MonoBehaviour
         return -1;
     }
 
-    public void Impulse()
+    public void Impulse() //dá o pulo dele
     {
         Vector2 direction = Rotate(new Vector2(0, 1), transform.rotation.eulerAngles.z);
         direction = Rotate(direction, Random.Range(-45f, 45f));
 
-        body.gravityScale = 0;
+        body.gravityScale = 0; //desliga a gravidade pra ele continuar na direção sem cair
         body.velocity = direction * 6;
 
-        transform.rotation = Quaternion.Euler(0, 0, Mathf.Rad2Deg * Mathf.Atan2(direction.y, direction.x) + 180);
+        transform.rotation = Quaternion.Euler(0, 0, Mathf.Rad2Deg * Mathf.Atan2(direction.y, direction.x) + 180);//seta a direção
         frameDelay = 5;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if(collision.collider.tag == "Wall" && frameDelay < 0) {
+        if(collision.collider.tag == "Wall" && frameDelay < 0) { //se bateu com uma parede, gruda nela
             float euler = Mathf.Rad2Deg * Mathf.Atan2(collision.GetContact(0).normal.y, collision.GetContact(0).normal.x) - 90;
-            Debug.Log("Hit with normal: " + collision.GetContact(0).normal + " and euler: " + euler);
             body.velocity = new Vector2(0, 0);
             transform.rotation = Quaternion.Euler(0, 0, euler);
             animator.SetTrigger("WallHit");
@@ -124,7 +126,7 @@ public class NojoMovement : MonoBehaviour
         return v;
     }
 
-    public void Cuspe()
+    public void Cuspe() //spawna o cuspe
     {
         Vector3 dif = player.transform.position - transform.position;
 
@@ -137,7 +139,7 @@ public class NojoMovement : MonoBehaviour
         acido.GetComponent<Rigidbody2D>().velocity = dif.normalized * 8;
     }
 
-    public void EndCuspe()
+    public void EndCuspe() //ao terminar a animação de cuspir, volta pro Idle
     {
         estado = NojoState.Idle;
         animator.ResetTrigger("Cuspe");
